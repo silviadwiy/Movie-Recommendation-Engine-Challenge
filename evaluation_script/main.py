@@ -1,18 +1,21 @@
+import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error
-
 
 def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwargs):
     print("Starting Evaluation.....")
     print("Submission related metadata:")
-    num_columns = test_annotation_file.shape[1]
-    rmse = np.zeros(num_columns)
-    
-    for i in range(num_columns):
-        rmse[i] = mean_squared_error(test_annotation_file[:,i], user_submission_file[:,i], squared=False)
-        
-    mcrmse_score = np.mean(rmse)
-    
+
+    df1 = pd.read_csv(test_annotation_file)
+    df2 = pd.read_csv(user_submission_file)
+
+    # Extract the target variables from each data frame
+    y_true = df1[['cohesion', 'syntax', 'vocabulary', 'phraseology', 'grammar', 'conventions']].values
+    y_pred = df2[['cohesion', 'syntax', 'vocabulary', 'phraseology', 'grammar', 'conventions']].values
+
+    # Calculate MCRMSE
+    mcrmse_score = np.sqrt(mean_squared_error(y_true, y_pred, multioutput='raw_values')).mean()
+
     print(kwargs["submission_metadata"])
     output = {}
     if phase_codename == "dev":
@@ -27,7 +30,4 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
         # To display the results in the result file
         output["submission_result"] = output["result"][0]["train_split"]
         print("Completed evaluation for Dev Phase")
-        # To display the results in the result file
-        output["submission_result"] = output["result"][0]
-        print("Completed evaluation for Test Phase")
     return output
