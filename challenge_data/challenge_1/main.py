@@ -1,39 +1,38 @@
 import pandas as pd
-import numpy as np
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import roc_auc_score
 
 def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwargs):
-    print("Starting Evaluation.....")
-    print("Submission related metadata:")
 
-    df1 = pd.read_csv(test_annotation_file)
-    df2 = pd.read_csv(user_submission_file)
+    # Load the ground truth labels and predictions into pandas dataframes
+    ground_truth = pd.read_csv(test_annotation_file)
+    prediction = pd.read_csv(user_submission_file)
 
-    df1 = df1.drop('text_id', axis=1)
-    df2 = df2.drop('text_id', axis=1)
+    # Merge the two dataframes on the "id" and "word" columns
+    merged_df = pd.merge(ground_truth, prediction, on='PhraseId')
 
-    # Extract the target variables from each data frame
-    # y_true = df1[['cohesion', 'syntax', 'vocabulary', 'phraseology', 'grammar', 'conventions']]
-    # y_pred = df2[['cohesion', 'syntax', 'vocabulary', 'phraseology', 'grammar', 'conventions']]
+    # Modify the sentiment labels and predicted scores for binary classification
+    merged_df['actual_binary'] = merged_df['SentimentAja'].apply(lambda x: 1 if x in [4, 5] else 0)
+    merged_df['predicted_binary'] = merged_df['Sentiment'].apply(lambda x: 1 if x >= 4 else 0)
 
-    y_true = df1
-    y_pred = df2
+    # Compute AUC-ROC score
+    actual_binary = merged_df['actual_binary']
+    predicted_binary = merged_df['predicted_binary']
+    auc_roc = roc_auc_score(actual_binary, predicted_binary)
 
-    # Calculate MCRMSE
-    mcrmse_score = np.sqrt(mean_squared_error(y_true, y_pred, multioutput='raw_values')).mean()
 
-    print(kwargs["submission_metadata"])
+
     output = {}
+
     if phase_codename == "dev":
         print("Evaluating for Dev Phase")
         output["result"] = [
             {
-                "train_split": {
-                    "Score": mcrmse_score,
+                "dev_split": {
+                    'Score': auc_roc,
                 }
             }
         ]
         # To display the results in the result file
-        output["submission_result"] = output["result"][0]["train_split"]
+        output["submission_result"] = output["result"][0]["dev_split"]
         print("Completed evaluation for Dev Phase")
     return output
