@@ -1,7 +1,7 @@
 # If you are not sure what all these fields mean, please refer our documentation here:
 # https://evalai.readthedocs.io/en/latest/configuration.html
-title: English Language Learning
-short_description: Evaluating language knowledge of ELL students from grades 8-12
+title: Movie Recommendation Engine Challange
+short_description: Movie Recommendation Engine Challange
 description: templates/description.html
 evaluation_details: templates/evaluation_details.html
 terms_and_conditions: templates/terms_and_conditions.html
@@ -52,31 +52,14 @@ challenge_phases:
         is_visible: True
       - name: publication_url
         is_visible: True
-    submission_meta_attributes:
-      - name: TextAttribute
-        description: Sample
-        type: text
-        required: False
-      - name: SingleOptionAttribute
-        description: Sample
-        type: radio
-        options: ["A", "B", "C"]
-      - name: MultipleChoiceAttribute
-        description: Sample
-        type: checkbox
-        options: ["alpha", "beta", "gamma"]
-      - name: TrueFalseField
-        description: Sample
-        type: boolean
-        required: True
     is_restricted_to_select_one_submission: False
     is_partial_submission_evaluation_enabled: False
-    allowed_submission_file_types: ".json, .zip, .txt, .tsv, .gz, .csv, .h5, .npy, .npz"
+    allowed_submission_file_types: ".csv"
 
 dataset_splits:
   - id: 1
-    name: Train Split
-    codename: train_split
+    name: Dev Split
+    codename: dev_split
 
 challenge_phase_splits:
   - challenge_phase_id: 1
