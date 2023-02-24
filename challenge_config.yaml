@@ -40,7 +40,7 @@ challenge_phases:
     end_date: 2099-04-25 23:59:59
     test_annotation_file: annotations/submission.csv
     codename: dev
-    max_submissions_per_day: 5
+    max_submissions_per_day: 99
     max_submissions_per_month: 50
     max_submissions: 50
     default_submission_meta_attributes:
