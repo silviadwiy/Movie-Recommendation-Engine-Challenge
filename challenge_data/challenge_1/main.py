@@ -9,16 +9,17 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
 
     # Merge the two dataframes on the "id" and "word" columns
     merged_df = pd.merge(ground_truth, prediction, on='PhraseId')
-    
-    # Map the sentiment scores to sentiment labels
-    label_map = {0: 'negative', 1: 'somewhat negative', 2: 'neutral', 3: 'somewhat positive', 4: 'positive'}
 
     # Modify the sentiment labels and predicted scores for binary classification
-#     merged_df['actual_binary'] = merged_df['SentimentAja'].apply(lambda x: 1 if x in [4, 5] else 0)
-#     merged_df['predicted_binary'] = merged_df['Sentiment'].apply(lambda x: 1 if x >= 4 else 0)
-    
-    merged_df['actual_binary'] = merged_df['SentimentAja'].apply(lambda x: label_map.get(x))
-    merged_df['predicted_binary'] = merged_df['Sentiment'].apply(lambda x: label_map.get(int(round(x))))
+    # merged_df['actual_binary'] = merged_df['SentimentAja'].apply(lambda x: 1 if x in [3, 4] else 0 if x in [0, 1])
+    # merged_df['predicted_binary'] = merged_df['Sentiment'].apply(lambda x: 1 if x >= 4 else 0)
+
+    merged_df['actual_binary'] = merged_df['SentimentAja'].apply(lambda x:
+        1 if x >= 2 else 0)
+
+    merged_df['predicted_binary'] = merged_df['Sentiment'].apply(lambda x:
+        1 if x >= 2 else 0)
+
 
     # Compute AUC-ROC score
     actual_binary = merged_df['actual_binary']
