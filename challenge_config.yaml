@@ -41,8 +41,8 @@ challenge_phases:
     test_annotation_file: annotations/submission.csv
     codename: dev
     max_submissions_per_day: 99
-    max_submissions_per_month: 50
-    max_submissions: 50
+    max_submissions_per_month: 999
+    max_submissions: 999
     default_submission_meta_attributes:
       - name: method_name
         is_visible: True
